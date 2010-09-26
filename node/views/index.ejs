@@ -15,12 +15,25 @@
 		socket.on('connect', function(){ 
 			socket.send('OK'); 
 		});
+		var lastmessage = '';
+  		var presentationid = 0;
 		socket.on('message', function(message){
-			$('#message').text(message);
+			message = $.parseJSON(message);
+			if ('presentationid' in message) {
+				presentationid = message.presentationid;
+				// reset presentation id, do nothing
+			}
+			//message = eval("(" + message + ")");
+//			$('#message').text(message);
+		//	lastmessage = $.parseJSON(message);
+			if (message.ack) {
+				$('#message').text(message.ack);
+			}
 		});
 		
 		$(document).ready(function() {
-		
+
+		   $('#messagebox').hide();
 		/*	$('button').toggle(function() {
 				// Odd presses
 				pingback($(this).attr('id'), true);
@@ -44,6 +57,17 @@
 			
 			$('li').click(function() {
 				socket.send($(this).attr('id'));
+				// Pop up a 10 second no-revote box
+				$('#messagebox').fadeIn('slow'); // for 10s 
+				var sec = 9;
+				var timer = setInterval(function() {
+					$('#timer').text(sec--);
+					if (sec == -1) {
+						$('#messagebox').fadeOut('slow');
+						clearInterval(timer);
+					}
+					
+				}, 1000);
 				
 			});
 		});
@@ -53,15 +77,22 @@
 		<script type="text/javascript" src="/javascript/index.js"></script> -->
 	</head>
 	<body>
-		<p>
-			<ul>
-			<li id="slow">Too slow!</li>
+		<div id="distance"></div> 
+		<div id="outer">
+			<p>
+				<ul>
+				<li id="slow">too slow</li>
 				
-			<li id="fast">Too fast!</li>
+				<li id="fast">too fast</li>
 			
-			<li id="OK">Just right!</li>
-			</ul>
-		</p>
-		<div id="message"></div>
+				<li id="OK">just right</li>
+				</ul>
+
+			<div id="messagebox">
+				<div id="message"></div>
+				<div id="timer">10</div>
+			</div>
+			</p>
+		</div>
 	</body>
 </html>

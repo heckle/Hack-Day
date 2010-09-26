@@ -3,8 +3,15 @@ var express = require('express'),
     app = express.createServer();
     io = require('socket.io');
     hashlib = require('./hashlib/hashlib');
+	Sequelize = require('sequelize');
+	JSON = require('JSON');
+	json = JSON.stringify;
 app.use(express.logger());
 
+
+// Sequelize ORM for database juiciness
+
+// var sequelize = new Sequelize('localhost');
 
 //template
 // removing jade for now, too much new syntax
@@ -26,7 +33,7 @@ app.get('/', function(req, res){
 		res.cookie( "clientid", newclientid, { expires: new Date(Date.now() + 36000000 ), httpOnly: true } );
 	}
     res.render('index.ejs', {
-        locals: { pageTitle: 'My Site', layout: false }
+        locals: { pageTitle: 'Pitch Hero!', layout: false }
     });
 });
 
@@ -45,13 +52,14 @@ var socket = io.listen(app);
 
 socket.on('connection', function(client){
   console.log('Client connection received');
-  client.send("Current presentation ID is 0");
+  client.send( json({ presentationid: 5 }) );
+  
   client.on('message', function(message) {
 	 // Ping back the client with an ack for now
 	console.log(client.sessionId + ' says ' + message);
-	client.send('You said ' + message);
+	client.send( json( { ack: message }) );
 	// Tip: client.broadcast messages all OTHER clients...!
-	socket.broadcast(client.sessionId + ' said ' + message);
+	// socket.broadcast(client.sessionId + ' said ' + message);
 	
   });
 })
