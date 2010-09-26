@@ -13,7 +13,8 @@
 		var socket = new io.Socket('localhost');
 		socket.connect();
 		socket.on('connect', function(){ 
-			socket.send('OK'); 
+			// Send a null as initial ping to establish client count.
+			socket.send('0' + " " + Date.now() ); 
 		});
 		var lastmessage = '';
   		var presentationid = 0;
@@ -23,9 +24,6 @@
 				presentationid = message.presentationid;
 				// reset presentation id, do nothing
 			}
-			//message = eval("(" + message + ")");
-//			$('#message').text(message);
-		//	lastmessage = $.parseJSON(message);
 			if (message.ack) {
 				$('#message').text(message.ack);
 			}
@@ -34,29 +32,9 @@
 		$(document).ready(function() {
 
 		   $('#messagebox').hide();
-		/*	$('button').toggle(function() {
-				// Odd presses
-				pingback($(this).attr('id'), true);
-				$(this).attr('class', 'true');
-			}, function() {
-				// Even presses
-				pingback($(this).attr('id'), false);
-				$(this).attr('class','false');
-			});
-
-			function pingback(pingtype, pingvalue) {
-				// Specific to fast/slow
-				var message = "click";
-				if (pingvalue == false) {
-					message = "OK";
-				} else {
-					message = pingtype;
-				}
-				socket.send(message);
-			} */
 			
 			$('li').click(function() {
-				socket.send($(this).attr('id'));
+				socket.send($(this).attr('id') + " " + Date.now() );
 				// Pop up a 10 second no-revote box
 				$('#messagebox').fadeIn('slow'); // for 10s 
 				var sec = 9;
@@ -64,6 +42,7 @@
 					$('#timer').text(sec--);
 					if (sec == -1) {
 						$('#messagebox').fadeOut('slow');
+						sec = 9;
 						clearInterval(timer);
 					}
 					
@@ -81,16 +60,22 @@
 		<div id="outer">
 			<p>
 				<ul>
-				<li id="slow">too slow</li>
+				<% for(var i=0; i<answers.length; i++) {%>
+					<li class="option_<%= i %>" id="<%= answerids[i] %>"><%= answers[i] %></li>
+				<% } %>
+		<!--		<li id="slow">too slow</li>
 				
 				<li id="fast">too fast</li>
 			
 				<li id="OK">just right</li>
+				-->
 				</ul>
 
 			<div id="messagebox">
-				<div id="message"></div>
-				<div id="timer">10</div>
+				<div id="header">thanks!</div>
+				<div id="vote">you voted: 
+				<div id="message"></div></div>
+				<small>vote again in <div id="timer">10</div>...</small>
 			</div>
 			</p>
 		</div>

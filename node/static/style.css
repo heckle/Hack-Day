@@ -55,30 +55,30 @@ li {
 	
 }
 
-#slow {
+.option_0 {
 	color: #BD51E8;
 	text-shadow: 0px -1px 0px #8338A1;
 }
 
-#slow:hover {
+.option_0:hover {
 	color:#D095E8;
 }
 
-#fast {
+.option_1 {
 	color: #F29C2C;
 	text-shadow: 0px -1px 0px #C27715;
 }
 
-#fast:hover {
+.option_1:hover {
 	color: #F2BF7C;
 }
 
-#OK {
+.option_2 {
 	color: #0074AE;
 	text-shadow: 0px -1px 0px #003B59;
 }
 
-#OK:hover {
+.option_2:hover {
 	color:#7AC9F0;
 }
 
@@ -103,6 +103,17 @@ li:hover {
 	text-shadow: rgba(255, 255, 255, 0.199219);
 }
 
+#header {
+	color: rgba(0, 0, 0, 0.698438);
+}
+
+#timer {
+	display:inline;
+}
+
+#messagebox small {
+	font-size: 18px;
+}
 
 .true { background: red; }
 .false { background: green; }
