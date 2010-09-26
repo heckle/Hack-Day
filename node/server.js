@@ -2,21 +2,31 @@
 var express = require('express'),
     app = express.createServer();
     io = require('socket.io');
+    hashlib = require('./hashlib/hashlib');
 app.use(express.logger());
 
 
-
 //template
-app.set('view engine', 'jade');
+// removing jade for now, too much new syntax
+//app.set('view engine', 'jade');
 
 app.set('view options', {
     layout: false
 });
 
+app.use(express.cookieDecoder());
+
 //routes
 app.get('/', function(req, res){
-    res.render('index', {
-        locals: { pageTitle: 'My Site', youAreUsingJade: true, layout: false }
+	var clientid = req.cookies["clientid"];
+	console.log('>> Received client id' + clientid);
+	if (!clientid) {
+		newclientid = hashlib.md5(Date.now() + Math.random());
+		console.log('>> New client id' + newclientid);
+		res.cookie( "clientid", newclientid, { expires: new Date(Date.now() + 36000000 ), httpOnly: true } );
+	}
+    res.render('index.ejs', {
+        locals: { pageTitle: 'My Site', layout: false }
     });
 });
 
