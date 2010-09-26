@@ -96,6 +96,16 @@ app.get('/', function(req, res){
     });
 });
 
+app.get('/present/', function(req,res) {
+	
+	res.render('present.ejs', {
+		
+		locals: { layout:false }
+		
+	});
+	
+})
+
 //static
 app.use(express.staticProvider(__dirname + '/static'));
 
