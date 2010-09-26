@@ -11,5 +11,11 @@ body {
 	display: inline;
 }
 
+#timeremaining:hover { cursor: pointer;}
+
 #logo { display:inline; }
 #avatar {display: inline;}
+
+.lowtime { color: red; }
+
+#fast,#slow,#great { display: inline; font-size: 10pt;}

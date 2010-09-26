@@ -12,7 +12,7 @@ var express = require('express'),
 	
 var clientid = '';
 var questionid = '1';
-var presentationid = '1';
+var presentationid = '0';
 
 
 app.use(express.logger());
@@ -71,7 +71,9 @@ app.set('view options', {
 // var answerone = new Answer(1, "too fast");
 // answerlist iterator to lookup?
 var answers = [ ("too fast"), ("too slow"),  ("just right") ];
-var answerids = [ 1, 2, 3]; // god this is hacky
+var answerids = [ 0, 1, 2]; // god this is hacky
+
+var votearray = [];
 
 var lookuplist = [];
 
@@ -91,12 +93,24 @@ app.get('/', function(req, res){
 		clientid = newclientid;
 		res.cookie( "clientid", newclientid, { expires: new Date(Date.now() + 36000000 ), httpOnly: true } );
 	}
-    res.render('/home/jal54/src/hackday/node/views/index.ejs', {
+//    res.render('/home/jal54/src/homeday/node/views/index.ejs', {
+        res.render('index.ejs', {
+
         locals: { pageTitle: 'Pitch Hero!', layout: false, answers: answers, answerids : answerids }
     });
 });
 
 app.get('/present/', function(req,res) {
+	
+	recentvotes = votearray;
+	
+	answer1 = sumVotes(recentvotes,1);
+	answer2 = sumVotes(recentvotes,2);
+	answer3 = sumVotes(recentvotes,3);
+	
+	console.log('1 votes ' + answer1);
+	console.log('2 votes ' + answer2);
+	console.log('3 votes ' + answer3);
 	
 	res.render('present.ejs', {
 		
@@ -121,9 +135,15 @@ var socket = io.listen(app, { transports:   ['websocket', 'server-events', 'html
 
 socket.on('connection', function(client){
   console.log('>> Client connection received');
-  client.send( json({ presentationid: 5 }) );
+  client.send( json({ presentationid: presentationid }) );
   
   client.on('message', function(message) {
+	if (message[0] == 'p') {
+		// new presentation id
+		message = message.split(" ");
+		presentationid = message[1];
+		console.log("New presentation! " + presentationid);
+	} else {
 	 // Ping back the client with an ack for now
 	message = message.split(" ");
 	var answerid = message[0];	
@@ -135,13 +155,28 @@ socket.on('connection', function(client){
 	// pres id, qu id, ans id, timestamp, user_id, time_remaining < serverside
 	console.log(answerid);
 	
+	var ping = new Vote(presentationid, answerid,timestamp);
+	votearray.push(ping);
+	
     dbclient.query("INSERT INTO stats VALUES ( " + presentationid + "," + questionid + "," + answerid + ", FROM_UNIXTIME(" + timestamp  + ") ," + client.sessionId  + ",0)");
 	
 	console.log(' >> ' + client.sessionId + ' says ' + message[0] + ' at ' + message[1]);
     // reverse lookup ID in memory!
 
-	client.send( json( { ack: lookuplist[message[0]] }) );
+	client.send( json( { ack: answers[message[0]] }) );
 
+    // send to all other clients including presenter
+
+    // do votes
+
+	recentvotes = lastTen(votearray);
+	
+	answer1 = sumVotes(recentvotes,1);
+	answer2 = sumVotes(recentvotes,2);
+	answer3 = sumVotes(recentvotes,3);
+	console.log('answer1');
+
+    client.broadcast ( json ( { answer1: answer1, answer2: answer2, answer3: answer3  }));
 
 	// Tip: client.broadcast messages all OTHER clients...!
 	
@@ -149,7 +184,7 @@ socket.on('connection', function(client){
 	// an answer ID and timestamp pair.
 	
 	// socket.broadcast(client.sessionId + ' said ' + message);
-	
+	}
   });
 })
 
@@ -162,6 +197,41 @@ function formatDate(date1) {
 function Answer(id,description) {
 	this.id = id;
 	this.description = description;
+}
+
+function Vote(pres, answer, timestamp) {
+	this.presentationid = pres;
+	this.answer = answer;
+	this.timestamp = timestamp; // epoch time
+	
+	function answer() {
+		return this.answer;
+	}
+	
+	function timestamp() {
+		return this.timestamp;
+	}
+}
+
+function lastTen(array) {
+	// filter on array.timestamp 
+	
+	var now = Date.now();
+	function TenMinutesAgo(element, index, array) { 
+		return (element.timestamp() > (now - 600000));
+		}
+	return array.filter(TenMinutesAgo);
+	
+}
+
+function sumVotes(array, criterion) {
+	var count = 0;
+	for (i=0; i<array.length; i++) {
+		if (array[i].answer() == criterion) {
+			count++;
+		}
+	}
+	return count;
 }
 
 dbclient.end();

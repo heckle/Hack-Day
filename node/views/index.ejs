@@ -10,7 +10,9 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		<script src="/javascript/socket.io.js" type="application/javascript"></script>
 		<script type="text/javascript">
-		var socket = new io.Socket('heckle.bigtoplabs.com');
+//		var socket = new io.Socket('heckle.bigtoplabs.com');
+		var socket = new io.Socket('localhost');
+		
 		socket.connect();
 		socket.on('connect', function(){ 
 			// Send a null as initial ping to establish client count.

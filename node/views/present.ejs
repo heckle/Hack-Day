@@ -3,6 +3,74 @@
 <link rel="stylesheet" href="/style.css" type="text/css"> 
 <link rel="stylesheet" href="/present.css" type="text/css"> 
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="/javascript/socket.io.js" type="application/javascript"></script>
+<script type="text/javascript">
+//		var socket = new io.Socket('heckle.bigtoplabs.com');
+		var socket = new io.Socket('localhost');
+		var answer1 = 0;
+		var answer2 = 0;
+		var answer3 = 0;
+		
+		
+		socket.connect();
+//		socket.on('connect', function(){ 
+			// Send a null as initial ping to establish client count.
+//			socket.send('0' + " " + Date.now() ); 
+//		});
+//		var lastmessage = '';
+  		var presentationid = 0;
+		socket.on('message', function(message){
+			message = $.parseJSON(message);
+			if ('answer1' in message) {
+			//	alert('new');
+				answer1 = message.answer1;
+				answer2 = message.answer2;
+				answer3 = message.answer3;
+				alert('answer1');
+				
+				var sum = answer1+answer2+answer3;
+				
+				$('#fast').css('font-size') = (answer1/sum)*100;
+				$('#slow').css('font-size') = (answer2/sum)*100;
+				$('#great').css('font-size') = (answer3/sum)*100;
+				
+				
+				$('#chart').attr('src') = 'http://chart.apis.google.com/chart?cht=bhs:nda&chs=1000x200&chd=t:' + (answer1*100/sum) +  '|' + (answer2*100/sum) + ' |'+ (answer3*100/sum) +'&chco=4d89f9,c6d9c6,cc0000&chbh=a,0,0&chma=0,0,0,0&chds=0,100&chm=tslow,000000,0,0,35,,c|tok,000000,1,0,125,,c|tfast,000000,2,0,75,,c';
+				
+			}
+			if ('presentationid' in message) {
+				presentationid = message.presentationid;
+				// reset presentation id, do nothing
+			}
+			if (message.ack) {
+				$('#message').text(message.ack);
+			}
+		});
+		
+		$(document).ready(function() {
+		
+		$('#timeremaining').click(function() {
+		   // Send new presentation ID
+			presentationid++;
+			socket.send('p ' + presentationid);
+			var sec = 59;
+				var timer = setInterval(function() {
+					if (sec > 0) {
+						if (sec < 10) {
+							$('#timeremaining').addClass("lowtime");
+						}
+						$('#timeremaining').text(sec--);
+					} else {
+						clearInterval(timer);
+					}
+				}, 1000);
+		});
+			
+		});
+		
+</script>
+
 <title>Pitch Hero</title>
 </head>
 <body>
@@ -11,13 +79,16 @@
 
 <div id="recentchart">
 	
-	<img src="http://chart.apis.google.com/chart?cht=bhs:nda&chs=1000x200&chd=t:10|50|40&chco=4d89f9,c6d9c6,cc0000&chbh=a,0,0&chma=0,0,0,0&chds=0,100&chm=tslow,000000,0,0,35,,c|tok,000000,1,0,125,,c|tfast,000000,2,0,75,,c" width="1000" height="200">
+	<!--<img id="chart" src="" width="1000" height="200">-->
 	
+	<div id="fast">too fast</div>
+	<div id="great">just right</div>
+	 <div id="slow">too slow</div>	
 	</div>
 <div id="bar2">
 <div id="timeremaining">60</div>
 <div id="logo"><img src="/pitchherologo.png"></img></div>
-<div id="avatar"><img src="/images/steve-jobs.jpg"></div>
+<!--><div id="avatar"><img src="/images/steve-jobs.jpg"></div>-->
 </div>
 </div>
 </body>
