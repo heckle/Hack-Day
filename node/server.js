@@ -1,10 +1,10 @@
 //requires
 var express = require('express'),
     app = express.createServer();
-    io = require('socket.io');
+    io = require('./socket.io');
     hashlib = require('./hashlib/hashlib');
 //	Sequelize = require('sequelize');
-	JSON = require('JSON');
+    JSON = require('json');
 	json = JSON.stringify;
 	Gently = require('gently');
 	gently = new Gently();
@@ -27,7 +27,7 @@ var Client = require('mysql').Client,
 
 // client.host = 'heckle.bigtoplabs.com';
 dbclient.user = 'root';
-dbclient.password = 'dev';
+dbclient.password = 'playground';
 dbclient.connect();
 
 dbclient.query('SHOW DATABASES',
@@ -91,7 +91,7 @@ app.get('/', function(req, res){
 		clientid = newclientid;
 		res.cookie( "clientid", newclientid, { expires: new Date(Date.now() + 36000000 ), httpOnly: true } );
 	}
-    res.render('index.ejs', {
+    res.render('/home/jal54/src/hackday/node/views/index.ejs', {
         locals: { pageTitle: 'Pitch Hero!', layout: false, answers: answers, answerids : answerids }
     });
 });
@@ -111,11 +111,11 @@ app.use(express.staticProvider(__dirname + '/static'));
 
 
 //start
-app.listen(8080);
+app.listen(80);
 console.log('Express server started on port %s', app.address().port);
 
 // socket.io, I choose you
-var socket = io.listen(app);
+var socket = io.listen(app, { transports:   ['websocket', 'server-events', 'htmlfile', 'xhr-multipart', 'xhr-polling', 'jsonp-polling' ]});
 
 // map client IDs to session IDs somewhere in here?
 
