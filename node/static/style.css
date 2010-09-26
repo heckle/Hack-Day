@@ -117,3 +117,10 @@ li:hover {
 
 .true { background: red; }
 .false { background: green; }
+
+// Present mode
+
+#logo { 
+		width: 300px;
+		height: 200px;
+		}

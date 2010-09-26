@@ -1,0 +1,15 @@
+body {
+	background-image: url('/images/audience1.jpg');
+	background-repeat: no-repeat;
+	background-attachment:fixed;
+}
+
+
+#timeremaining {
+	font-size: 200pt;
+	color: white;
+	display: inline;
+}
+
+#logo { display:inline; }
+#avatar {display: inline;}

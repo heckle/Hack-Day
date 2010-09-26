@@ -1,7 +1,7 @@
 //requires
 var express = require('express'),
     app = express.createServer();
-    io = require('./socket.io');
+    io = require('socket.io');
     hashlib = require('./hashlib/hashlib');
 //	Sequelize = require('sequelize');
     JSON = require('json');
