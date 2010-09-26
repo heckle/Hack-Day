@@ -1,15 +1,35 @@
+* {
+        margin:0;
+        padding:0;
+}
+
+
+
 body {
 	background-image: url('/images/audience1.jpg');
 	background-repeat: no-repeat;
 	background-attachment:fixed;
+	font-family: 'helvetica';
+	font-weight: bold;
+	height:100%;
+	overflow:hidden;
 }
 
+#container {
+	height:99%;
+	margin: 20px;
+	background: rgba(0, 0, 0, 0.799219);
+}
 
 #timeremaining {
-	font-size: 200pt;
+	height: 200px;
+	font-size: 180px;
 	color: white;
-	display: inline;
+	margin: 0;
 }
+
+#time { cursor: pointer; display: inline;}
+#winrar { cursor: pointer; display: inline; }
 
 #timeremaining:hover { cursor: pointer;}
 
@@ -19,3 +39,31 @@ body {
 .lowtime { color: red; }
 
 #fast,#slow,#great { display: inline; font-size: 10pt;}
+
+#fast {
+	color: #BD51E8;
+	text-shadow: 0px -1px 0px #8338A1;
+}
+
+
+
+#slow {margin-left:20px;
+	color: #F29C2C;
+	text-shadow: 0px -1px 0px #C27715;
+}
+#great {
+	margin-left:20px;
+	color: #0074AE;
+	text-shadow: 0px -1px 0px #003B59;
+
+
+}
+#link {
+font-size: 30px;
+font-family:'Helvetica Neue','Helvetica',sans-serif;
+font-weight:normal;
+	text-shadow: 0px -1px 0px #c0c0c0;
+letter-spacing: 3px;
+margin-top:5px;
+
+}

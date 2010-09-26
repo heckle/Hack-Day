@@ -1,7 +1,7 @@
 //requires
 var express = require('express'),
     app = express.createServer();
-    io = require('socket.io');
+    io = require('./socket.io');
     hashlib = require('./hashlib/hashlib');
 //	Sequelize = require('sequelize');
     JSON = require('json');
@@ -72,7 +72,7 @@ app.set('view options', {
 // answerlist iterator to lookup?
 var answers = [ ("too fast"), ("too slow"),  ("just right") ];
 var answerids = [ 0, 1, 2]; // god this is hacky
-
+// 2 -1 1
 var votearray = [];
 
 var lookuplist = [];
@@ -93,8 +93,8 @@ app.get('/', function(req, res){
 		clientid = newclientid;
 		res.cookie( "clientid", newclientid, { expires: new Date(Date.now() + 36000000 ), httpOnly: true } );
 	}
-//    res.render('/home/jal54/src/homeday/node/views/index.ejs', {
-        res.render('index.ejs', {
+        res.render('/home/jal54/src/hackday/node/views/index.ejs', {
+    //    res.render('index.ejs', {
 
         locals: { pageTitle: 'Pitch Hero!', layout: false, answers: answers, answerids : answerids }
     });
@@ -112,7 +112,8 @@ app.get('/present/', function(req,res) {
 	console.log('2 votes ' + answer2);
 	console.log('3 votes ' + answer3);
 	
-	res.render('present.ejs', {
+
+        res.render('/home/jal54/src/hackday/node/views/present.ejs', {
 		
 		locals: { layout:false }
 		

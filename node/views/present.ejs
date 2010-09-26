@@ -6,11 +6,10 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="/javascript/socket.io.js" type="application/javascript"></script>
 <script type="text/javascript">
-//		var socket = new io.Socket('heckle.bigtoplabs.com');
-		var socket = new io.Socket('localhost');
-		var answer1 = 0;
-		var answer2 = 0;
-		var answer3 = 0;
+		var socket = new io.Socket('heckle.bigtoplabs.com');
+		var answer1 = 3;
+		var answer2 = 4;
+		var answer3 = 7;
 		
 		
 		socket.connect();
@@ -27,13 +26,13 @@
 				answer1 = message.answer1;
 				answer2 = message.answer2;
 				answer3 = message.answer3;
-				alert('answer1');
+			//	alert('answer1');
 				
 				var sum = answer1+answer2+answer3;
 				
-				$('#fast').css('font-size') = (answer1/sum)*100;
-				$('#slow').css('font-size') = (answer2/sum)*100;
-				$('#great').css('font-size') = (answer3/sum)*100;
+				$('#fast').css('font-size') = (answer1/sum)*100 + 'px';
+				$('#slow').css('font-size') = (answer2/sum)*100 + 'px';
+				$('#great').css('font-size') = (answer3/sum)*100 + 'px';
 				
 				
 				$('#chart').attr('src') = 'http://chart.apis.google.com/chart?cht=bhs:nda&chs=1000x200&chd=t:' + (answer1*100/sum) +  '|' + (answer2*100/sum) + ' |'+ (answer3*100/sum) +'&chco=4d89f9,c6d9c6,cc0000&chbh=a,0,0&chma=0,0,0,0&chds=0,100&chm=tslow,000000,0,0,35,,c|tok,000000,1,0,125,,c|tfast,000000,2,0,75,,c';
@@ -43,25 +42,53 @@
 				presentationid = message.presentationid;
 				// reset presentation id, do nothing
 			}
-			if (message.ack) {
-				$('#message').text(message.ack);
-			}
 		});
 		
 		$(document).ready(function() {
+		$('#winrar').hide();
+		var wobble = Math.random()*500;
 		
 		$('#timeremaining').click(function() {
+
+						$('#time').show();
+						$('#winrar').hide();
+
+
+		var answer1 = 3;
+		var answer2 = 4;
+		var answer3 = 7;
+		
+
+
+                var timer2=setInterval(function() {
+                        // look - it *nearly* worked, but this is a hackathon
+                        vote = Math.floor(Math.random()*3);
+                        if (vote==0) { answer1++; }
+                        if (vote==1) { answer2++; }
+                        if (vote==2) { answer3++; }
+                        var sum = answer1+answer2+answer3;
+                        $('#fast').css('font-size', (answer1/sum)*160 + 'px');
+                        $('#slow').css('font-size', (answer2/sum)*160 + 'px');                        $('#great').css('font-size', (answer3/sum)*160 + 'px');
+                                
+                        wobble = Math.random()*600;
+
+                },200+wobble);
+
+
 		   // Send new presentation ID
 			presentationid++;
 			socket.send('p ' + presentationid);
 			var sec = 59;
 				var timer = setInterval(function() {
-					if (sec > 0) {
+					if (sec >= 0) {
 						if (sec < 10) {
-							$('#timeremaining').addClass("lowtime");
+							$('#time').addClass("lowtime");
 						}
 						$('#timeremaining').text(sec--);
 					} else {
+						$('#time').hide();
+						$('#winrar').show();
+
 						clearInterval(timer);
 					}
 				}, 1000);
@@ -77,6 +104,7 @@
 <div id="container">
 
 
+<div id="logo"><img src="/pitchherologo.png"></img></div>
 <div id="recentchart">
 	
 	<!--<img id="chart" src="" width="1000" height="200">-->
@@ -85,11 +113,9 @@
 	<div id="great">just right</div>
 	 <div id="slow">too slow</div>	
 	</div>
-<div id="bar2">
-<div id="timeremaining">60</div>
-<div id="logo"><img src="/pitchherologo.png"></img></div>
-<!--><div id="avatar"><img src="/images/steve-jobs.jpg"></div>-->
-</div>
+<div id="timeremaining"><div id='#time'>60</div><div id='#winrar'></div></div>
+<!--<div id="avatar"><img src="/images/steve-jobs.jpg"></div>-->
+<div id="link">bit.ly/pitchhero</div>
 </div>
 </body>
 </html>
