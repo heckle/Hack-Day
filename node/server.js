@@ -1,7 +1,9 @@
 //requires
 var express = require('express'),
     app = express.createServer();
+    io = require('socket.io');
 app.use(express.logger());
+
 
 
 //template
@@ -23,5 +25,12 @@ app.use(express.staticProvider(__dirname + '/static'));
 
 
 //start
-app.listen(3000);
+app.listen(8080);
 console.log('Express server started on port %s', app.address().port);
+
+// socket.io, I choose you
+var socket = io.listen(app);
+
+socket.on('connection', function(client){
+  console.log('Client connection received');
+})
