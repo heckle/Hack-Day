@@ -6,22 +6,62 @@
 			<%= pageTitle %>
 		</title>
 		<link rel="stylesheet" href="/style.css" type="text/css">
-		<link rel="stylesheet" href="/ext-touch.css" type="text/css">
+		<!--<link rel="stylesheet" href="/ext-touch.css" type="text/css">-->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		<script src="/javascript/socket.io.js" type="application/javascript"></script>
 		<script type="text/javascript">
 		var socket = new io.Socket('localhost');
 		socket.connect();
 		socket.on('connect', function(){ 
-			socket.send('hi!'); 
+			socket.send('OK'); 
 		});
+		socket.on('message', function(message){
+			$('#message').text(message);
+		});
+		
+		$(document).ready(function() {
+		
+		/*	$('button').toggle(function() {
+				// Odd presses
+				pingback($(this).attr('id'), true);
+				$(this).attr('class', 'true');
+			}, function() {
+				// Even presses
+				pingback($(this).attr('id'), false);
+				$(this).attr('class','false');
+			});
+
+			function pingback(pingtype, pingvalue) {
+				// Specific to fast/slow
+				var message = "click";
+				if (pingvalue == false) {
+					message = "OK";
+				} else {
+					message = pingtype;
+				}
+				socket.send(message);
+			} */
+			
+			$('li').click(function() {
+				socket.send($(this).attr('id'));
+				
+			});
+		});
+		
 		</script>
-		<script type="text/javascript" src="/javascript/ext-touch-debug.js"></script>
-				<script type="text/javascript" src="/javascript/index.js"></script>
+		<!--<script type="text/javascript" src="/javascript/ext-touch-debug.js"></script>
+		<script type="text/javascript" src="/javascript/index.js"></script> -->
 	</head>
 	<body>
 		<p>
-			Hello World!
+			<ul>
+			<li id="slow">Too slow!</li>
+				
+			<li id="fast">Too fast!</li>
+			
+			<li id="OK">Just right!</li>
+			</ul>
 		</p>
+		<div id="message"></div>
 	</body>
 </html>

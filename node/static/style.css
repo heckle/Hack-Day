@@ -1,1 +1,48 @@
-body { font-family: Arial; }
+body { 
+	font-family: Arial, Helvetica, sans-serif;
+	background: black;
+	 }
+
+li { 
+	list-style: none; 
+	font-size: 43px;
+	letter-spacing: -1px;
+	font-weight: bold;
+	
+}
+
+#slow {
+	color: #BD51E8;
+	text-shadow: 0px -1px 0px #8338A1;
+}
+
+#slow:hover {
+	color:#D095E8;
+}
+
+#fast {
+	color: #F29C2C;
+	text-shadow: 0px -1px 0px #C27715;
+}
+
+#fast:hover {
+	color: #F2BF7C;
+}
+
+#OK {
+	color: #0074AE;
+	text-shadow: 0px -1px 0px #003B59;
+}
+
+#OK:hover {
+	color:#7AC9F0;
+}
+
+li:hover {
+	text-shadow: 0px -1px 0px #c0c0c0;
+	
+}
+
+
+.true { background: red; }
+.false { background: green; }

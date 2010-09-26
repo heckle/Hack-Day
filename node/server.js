@@ -41,6 +41,17 @@ console.log('Express server started on port %s', app.address().port);
 // socket.io, I choose you
 var socket = io.listen(app);
 
+// map client IDs to session IDs somewhere in here?
+
 socket.on('connection', function(client){
   console.log('Client connection received');
+  client.send("Current presentation ID is 0");
+  client.on('message', function(message) {
+	 // Ping back the client with an ack for now
+	console.log(client.sessionId + ' says ' + message);
+	client.send('You said ' + message);
+	// Tip: client.broadcast messages all OTHER clients...!
+	socket.broadcast(client.sessionId + ' said ' + message);
+	
+  });
 })
